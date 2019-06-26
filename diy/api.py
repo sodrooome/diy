@@ -74,11 +74,11 @@ class UserRequestHandler:
 
         response = Response()
 
-        for path, handler in self.routes.items():
-            if path == request.path:
-                handler(request, response)
-                return response
-        self.default_response(response)
+        handler, kwargs = self.find_handler(request_path=request.path)
+        if handler is not None:
+            handler(request, response, **kwargs)
+        else:
+            self.default_response(response)
         return response
 
     def find_handler(self, request_path):
@@ -87,5 +87,4 @@ class UserRequestHandler:
             parse_result = parse(path, request_path)
             if parse_result is not None:
                 return handler, parse_result.named
-
         return None, None
