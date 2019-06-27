@@ -12,6 +12,6 @@ def about(request, response):
     response.text = "Hello from about page"
 
 @app.route("/post/{topic}")
-def topic(request, response, name):
+def topic(request, response, topic):
 
-    response.text = "This post is {topic}"
+    response.text = f"This post is {topic}"
