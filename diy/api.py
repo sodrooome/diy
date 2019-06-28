@@ -5,6 +5,7 @@ class API:
 
     """
     this is just for examples
+    to get reponse Hello World in web browser
     """
 
     def __call__(self, environ, start_response):
@@ -17,7 +18,8 @@ class API:
 class RequestAPI:
 
     """
-    same like above
+    this is just for examples
+    to get reponse Hello World in web browser
     """
 
     def __call__(self, environ, start_response):
@@ -52,10 +54,16 @@ class UserRequestHandler:
 
         self.routes = {}
 
+    def route_url(self, path, handler):
+
+        assert path not in self.routes, "Routes Already Exists"
+
+        self.routes[path] = handler
+
     def route(self, path):
 
         def wrapper(handler):
-            self.routes[path] = handler
+            self.route_url(path, handler)
             return handler
         return wrapper
 
@@ -75,7 +83,29 @@ class UserRequestHandler:
         response = Response()
 
         handler, kwargs = self.find_handler(request_path=request.path)
+
         if handler is not None:
+            handler(request, response, **kwargs)
+        else:
+            self.default_response(response)
+        return response
+
+    def class_based_request(self, request):
+
+        """
+        class based views such as Django
+        but it's not working and still draft
+        """
+
+        response = Response()
+
+        handler, kwargs = self.find_handler_request(request_path=request.path)
+
+        if handler is not None:
+            if inspect.isclass(handler):
+                handler = getattr(handler(), request.method.lower(), None)
+                if handler is None:
+                    raise AttributeError("Method now allowed", request.method)
             handler(request, response, **kwargs)
         else:
             self.default_response(response)
