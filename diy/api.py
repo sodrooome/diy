@@ -1,3 +1,4 @@
+import inspect
 from webob import Request, Response
 from parse import parse
 
@@ -54,6 +55,12 @@ class UserRequestHandler:
 
         self.routes = {}
 
+    def __call__(self, environ, start_response):
+
+        request = Request(environ)
+        response = self.handle_request(request)
+        return response(environ, start_response)
+
     def route_url(self, path, handler):
 
         assert path not in self.routes, "Routes Already Exists"
@@ -66,12 +73,6 @@ class UserRequestHandler:
             self.route_url(path, handler)
             return handler
         return wrapper
-
-    def __call__(self, environ, start_response):
-
-        request = Request(environ)
-        response = self.handle_request(request)
-        return response(environ, start_response)
 
     def default_response(self, response):
 
@@ -90,11 +91,54 @@ class UserRequestHandler:
             self.default_response(response)
         return response
 
+    def find_handler(self, request_path):
+
+        for path, handler in self.routes.items():
+            parse_result = parse(path, request_path)
+            if parse_result is not None:
+                return handler, parse_result.named
+        return None, None
+
+class UserRequestBasedHandler:
+
+    """
+    class for implemented alternative
+    route using class-based handlers
+    """
+
+    def __init__(self):
+
+        self.routes = {}
+
+    def __call__(self, environ, start_response):
+
+        request = Request(environ)
+        response = self.class_based_request(request)
+        return response(environ, start_response)
+
+    def url(self, path, handler):
+
+        assert path not in self.routes, "Routes Already Exists"
+
+        self.routes[path] = handler
+
+    def route(self, path):
+
+        def wrapper(handler):
+            self.url(path, handler)
+            return handler
+        return wrapper
+
+    def default_response(self, response):
+
+        response.status_code = 404
+        response.text = "Page Not Found"
+
     def class_based_request(self, request):
 
         """
         class based views such as Django
-        but it's not working and still draft
+        and still draft
         """
 
         response = Response()
@@ -111,10 +155,13 @@ class UserRequestHandler:
             self.default_response(response)
         return response
 
-    def find_handler(self, request_path):
+    def find_handler_request(self, request_path):
 
         for path, handler in self.routes.items():
             parse_result = parse(path, request_path)
             if parse_result is not None:
                 return handler, parse_result.named
         return None, None
+
+
+
