@@ -1,5 +1,13 @@
-from api import API, RequestAPI, UserRequest, UserRequestHandler
-app = UserRequestHandler()
+from api import (
+    API, 
+    RequestAPI, 
+    UserRequest, 
+    UserRequestHandler,
+    UserRequestBasedHandler
+)
+app = UserRequestBasedHandler()
+
+# Base example for routing
 
 @app.route("/home")
 def home(request, response):
@@ -16,22 +24,21 @@ def topic(request, response, topic):
 
     response.text = f"This post is {topic}"
 
+# example of new routing fo
+# class-based handlers
+
 @app.route("/new")
 class NewTopics:
     def get(self, request, response):
 
         response.text = "This is new topic"
 
-# example of new routing
+    def post(self, request, response):
+
+        response.text = "Post new topic"
 
 def handler(request, response):
 
     response.text = "test new route"
 
-app.route_url("/test", handler)
-
-def eject(request, response):
-
-    response.text = "eject new test"
-
-app.route_url("/eject", eject)
+app.url("/index", handler)
