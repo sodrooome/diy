@@ -18,9 +18,7 @@ Python 3.6+
 
 ## Installation
 
-Aww, this has not been packaging and published in the python index yet.
-
-But don't worry, for development and learning purposes you can clone the original repo
+for development and learning purposes you can clone the original repo
 ```bash
 git clone https://github.com/sodrooome/diy.git
 ```
@@ -28,7 +26,7 @@ git clone https://github.com/sodrooome/diy.git
 ## Minimal Configuration
 
 ```python
-from diy import api
+from api import UserRequestHandler()
 
 app = UserRequestHandler()
 

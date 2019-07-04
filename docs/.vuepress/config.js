@@ -36,7 +36,10 @@ module.exports = {
             '/',
             '/index/',
             '/reference/',
+            '/setting/',
+            '/how-to/',
             '/story/'
+
 
         ]
 
