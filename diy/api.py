@@ -1,6 +1,9 @@
+import os
 import inspect
 from webob import Request, Response
 from parse import parse
+from jinja2 import FileSystemLoader, Environment
+
 
 class API:
 
@@ -16,6 +19,7 @@ class API:
         start_response(status, headers=[])
         return iter([response_body])
 
+
 class RequestAPI:
 
     """
@@ -30,6 +34,7 @@ class RequestAPI:
         response.text = "Hello, World!"
         return response(environ, start_response)
 
+
 class UserRequest:
 
     def __call__(self, environ, start_response):
@@ -39,7 +44,6 @@ class UserRequest:
         return response(environ, start_response)
 
     def handle_request(self, request):
-
         """
         based on mozilla documentation
         """
@@ -48,6 +52,7 @@ class UserRequest:
         response = Response()
         response.text = f"This is {user}"
         return response
+
 
 class UserRequestHandler:
 
@@ -99,6 +104,7 @@ class UserRequestHandler:
                 return handler, parse_result.named
         return None, None
 
+
 class UserRequestBasedHandler:
 
     """
@@ -106,9 +112,12 @@ class UserRequestBasedHandler:
     route using class-based handlers
     """
 
-    def __init__(self):
+    def __init__(self, templates_dirs="templates"):
 
         self.routes = {}
+
+        self.templates_env = Environment(
+            loader=FileSystemLoader(os.path.abspath(templates_dirs)))
 
     def __call__(self, environ, start_response):
 
@@ -135,7 +144,6 @@ class UserRequestBasedHandler:
         response.text = "Page Not Found"
 
     def class_based_request(self, request):
-
         """
         class based views such as Django
         and still draft
@@ -163,5 +171,9 @@ class UserRequestBasedHandler:
                 return handler, parse_result.named
         return None, None
 
+    def template(self, template_name, context=None):
 
+        if context is None:
+            context = {}
 
+        return self.templates_env.get_template(template_name).render(**context)
