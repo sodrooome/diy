@@ -64,10 +64,10 @@ app = UserRequestBasedHandler()
 app.url("/topics", new_topics)
 ```
 
-And it's working! 
+And it's working!
 this is more profitable in our web performance later and make it simpler rather than stacking it in one file.
 
-## Class Based Handlers <Badge text="future" type="danger"/>
+## Class Based Handlers
 
 For the future, DIY framework will try to implement class based handlers like that already implemented in Django. In general, class based handlers allow users to be able to route a function and class simultaneously on a large scale, such as if you want to use the method likes `get()`, `post()`, `delete()`.
 
@@ -84,5 +84,40 @@ class NewTopics:
 ```
 
 this is one of the most suitable features, but it is predicted that it takes a lot of time considering that it's built very complex.
+
+:::tip
+From now, you can use Class Based Handlers method like examples above. This is the latest release for DIY
+:::
+
+## Template Support
+
+Template support allows us to be able to write program code based on HTML or CSS. With `Jinja2` environment, we can write the language more easily.
+To use this, you can do this by creating a new directory called `templates`, and then creating a file with the existence of `.html` with the file name it's up to you
+
+for example like this :
+
+```html
+<!-- templates/index.html -->
+<html>
+  <header>
+    <title>Hello World from Here!</title>
+  </header>
+
+  <body>
+    <p>Learn HTML plus Python</p>
+  </body>
+</html>
+```
+
+then do the routing handler (you are free to use which method, explore as you like!), like this :
+
+```python
+@app.route("/template")
+def template(request, response):
+
+    response.body = app.template('index.html').encode()
+```
+
+and try to look your browser, of course it's work!
 
 <Index/>

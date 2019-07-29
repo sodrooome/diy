@@ -59,6 +59,30 @@ Here's the example
 gunicorn main:main
 ```
 
+## Using Interpolation
 
+You can also use text interpolation as well as Django or Vue by giving context variables both in your `.html` file and when on route file,
+this is indicated by using the `{{ }}` sign in the variable prefix in the extension `.html` and also you're free to name your variable.
+
+```html
+<html>
+  <header>
+    <title>Hello World from {{ name }}</title>
+  </header>
+
+  <body>
+    <p>Learn HTML {{ context }}</p>
+  </body>
+</html>
+```
+
+`name` and `context` is a variable that will later contain an object that is handled by our function
+
+```python
+@app.route("/template")
+def template(request, response):
+    response.body = app.template('index.html', context={'name': 'DIY template', 'context': 'from DIY Framework'}).encode()
+```
+when you look at the browser again, the name and context will change to DIY templates and from DIY framework, according to what has been conditioned on our function
 
 <Guide/>
