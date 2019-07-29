@@ -5,6 +5,8 @@ import inspect
 from webob import Request, Response
 from parse import parse
 from jinja2 import FileSystemLoader, Environment
+from requests import session as RequestsSession
+from wsgiadapter import WSGIAdapter as RequestWSGIAdapter
 
 
 class API:
@@ -148,7 +150,7 @@ class UserRequestBasedHandler:
     def class_based_request(self, request):
         """
         class based views such as Django
-        and still draft
+        already implemented
         """
 
         response = Response()
@@ -179,3 +181,16 @@ class UserRequestBasedHandler:
             context = {}
 
         return self.templates_env.get_template(template_name).render(**context)
+
+
+    def session(self, base_url="http://baseserver"):
+
+        """ 
+        mount it to session object
+        any request will start using URL given
+        by prefix base_url
+        """
+
+        session = RequestsSession()
+        session.mount(prefix=base_url, adapter=RequestWSGIAdapter(self))
+        return session
