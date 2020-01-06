@@ -3,4 +3,4 @@ gunicorn==19.9.0
 parse==1.12.0
 pytest==4.0.2
 WebOb==1.8.5
-waitress==1.2.1
+waitress==1.4.2
